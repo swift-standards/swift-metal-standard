@@ -2,6 +2,8 @@ extension Metal {
     /// A statement.
     public indirect enum Statement: Sendable, Hashable {
         case declare(Kind, String, Expression?)
+        /// An array of a number of elements.
+        case array(Kind, String, Int)
         case assign(Expression, Expression)
         case evaluate(Expression)
         case `if`(Expression, [Self], else: [Self] = [])
@@ -23,6 +25,7 @@ extension Metal.Statement {
         func inner(_ statements: [Self]) -> [String] { statements.flatMap { $0.lines(depth + 1) } }
         switch self {
         case .declare(let kind, let name, let value): return [indent + "\(kind) \(name)" + (value.map { " = \($0)" } ?? "") + ";"]
+        case .array(let kind, let name, let count): return [indent + "\(kind) \(name)[\(count)];"]
         case .assign(let place, let value): return [indent + "\(place) = \(value);"]
         case .evaluate(let value): return [indent + "\(value);"]
         case .if(let condition, let then, let otherwise):
