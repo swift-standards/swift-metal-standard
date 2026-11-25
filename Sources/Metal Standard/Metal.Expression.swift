@@ -12,6 +12,8 @@ extension Metal {
         case convert(Kind, [Self])
         /// The same bits as another type.
         case bits(Kind, Self)
+        /// The same address as another type's.
+        case pointer(Kind, Self)
         case member(Self, String)
         case element(Self, Self)
         case unary(Unary, Self)
@@ -62,6 +64,7 @@ extension Metal.Expression: CustomStringConvertible {
         case .call(let name, let arguments): "\(name)(\(Self.list(arguments)))"
         case .convert(let kind, let arguments): "\(kind)(\(Self.list(arguments)))"
         case .bits(let kind, let value): "as_type<\(kind)>(\(value))"
+        case .pointer(let kind, let value): "((\(kind))\(value.operand))"
         case .member(let value, let name): "\(value.operand).\(name)"
         case .element(let value, let place): "\(value.operand)[\(place)]"
         case .unary(let sign, let value): "\(sign.rawValue)\(value.operand)"

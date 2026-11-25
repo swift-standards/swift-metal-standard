@@ -41,7 +41,10 @@ extension Metal.Function {
     /// Where a kernel's parameter comes from.
     public enum Attribute: Sendable, Hashable {
         case buffer(Int)
+        case texture(Int)
         case threadPositionInGrid
+        case threadIndexInSimdgroup
+        case threadsPerSimdgroup
     }
 
     /// The first line, without the body.
@@ -50,7 +53,10 @@ extension Metal.Function {
             let attribute =
                 switch parameter.attribute {
                 case .buffer(let index): " [[buffer(\(index))]]"
+                case .texture(let index): " [[texture(\(index))]]"
                 case .threadPositionInGrid: " [[thread_position_in_grid]]"
+                case .threadIndexInSimdgroup: " [[thread_index_in_simdgroup]]"
+                case .threadsPerSimdgroup: " [[threads_per_simdgroup]]"
                 case nil: ""
                 }
             return "\(parameter.kind) \(parameter.name)\(attribute)"
