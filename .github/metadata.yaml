@@ -1,0 +1,9 @@
+description: "Metal's shading language for Swift: functions, statements and expressions as values, and their text."
+topics:
+  - standards
+  - metal
+  - shading-language
+  - gpu
+homepage: "https://swift-institute.org"
+readme:
+  family: E
