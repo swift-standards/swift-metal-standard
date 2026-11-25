@@ -22,6 +22,7 @@ extension Metal.Function {
     public enum Role: String, Sendable, Hashable, CaseIterable {
         case kernel = "kernel"
         case inner = "static"
+        case inlined = "static __attribute__((always_inline))"
         case inline = "static inline"
     }
 
