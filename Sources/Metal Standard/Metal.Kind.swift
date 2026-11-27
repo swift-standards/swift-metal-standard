@@ -7,7 +7,10 @@ extension Metal {
         case vector(Scalar, Int)
         case structure(String)
         /// A texture of two dimensions, written as vectors of a scalar.
-        case texture(Scalar)
+        /// A texture of two dimensions: written at places, or read and sampled.
+        case texture(Scalar, written: Bool = true)
+        /// What reads a texture between its texels.
+        case sampler
         case pointer(Kind, Space, constant: Bool = false)
         case reference(Kind, Space, constant: Bool = false)
     }
@@ -28,7 +31,8 @@ extension Metal.Kind: CustomStringConvertible {
         case .scalar(let scalar): scalar.rawValue
         case .vector(let scalar, let count): "\(scalar.rawValue)\(count)"
         case .structure(let name): name
-        case .texture(let scalar): "texture2d<\(scalar.rawValue), access::write>"
+        case .texture(let scalar, let written): written ? "texture2d<\(scalar.rawValue), access::write>" : "texture2d<\(scalar.rawValue)>"
+        case .sampler: "sampler"
         case .pointer(let kind, let space, let constant): "\(space.rawValue) \(constant ? "const " : "")\(kind) *"
         case .reference(let kind, let space, let constant): "\(space.rawValue) \(constant ? "const " : "")\(kind) &"
         }

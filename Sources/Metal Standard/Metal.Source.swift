@@ -26,7 +26,7 @@ extension Metal.Source {
             switch item {
             case .structure(let structure):
                 (["struct \(structure.name) {"]
-                    + structure.members.map { "    \($0.kind) \($0.name)" + ($0.count.map { "[\($0)]" } ?? "") + ";" } + ["};"])
+                    + structure.members.map { "    \($0.kind) \($0.name)" + ($0.count.map { "[\($0)]" } ?? "") + ($0.attribute.map { " \($0)" } ?? "") + ";" } + ["};"])
                     .joined(separator: "\n")
             case .constants(let scalar, let name, let values):
                 "constant \(scalar.rawValue) \(name)[\(values.count)] = {\(values.map { $0.description }.joined(separator: ", "))};"

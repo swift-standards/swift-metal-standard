@@ -36,5 +36,48 @@ extension `Metal Tests` {
                     """
             )
         }
+
+        @Test
+        func `A vertex and a fragment stage are written with what one hands the other, a texture and a sampler`() {
+            let handed = Metal.Structure(
+                name: "Handed",
+                members: [.init(.vector(.float, 4), "position", at: .position), .init(.uint, "shape", at: .place(0, flat: true))]
+            )
+            let corner = Metal.Function(
+                role: .vertex,
+                result: .structure("Handed"),
+                name: "corner",
+                parameters: [.init(.uint, "vertex", .vertexID), .init(.uint, "instance", .instanceID)],
+                body: [.declare(.structure("Handed"), "out", nil), .return(.name("out"))]
+            )
+            let pixel = Metal.Function(
+                role: .fragment,
+                result: .vector(.float, 4),
+                name: "pixel",
+                parameters: [
+                    .init(.structure("Handed"), "handed", .stageIn), .init(.texture(.float, written: false), "sheet", .texture(0)),
+                    .init(.sampler, "between", .sampler(0)),
+                ],
+                body: [.return(.call("sheet.sample", [.name("between"), .member(.member(.name("handed"), "position"), "xy")]))]
+            )
+            #expect(
+                Metal.Source([.structure(handed), .function(corner), .function(pixel)]).text == """
+                    struct Handed {
+                        float4 position [[position]];
+                        uint shape [[user(locn0), flat]];
+                    };
+
+                    vertex Handed corner(uint vertex [[vertex_id]], uint instance [[instance_id]]) {
+                        Handed out;
+                        return out;
+                    }
+
+                    fragment float4 pixel(Handed handed [[stage_in]], texture2d<float> sheet [[texture(0)]], sampler between [[sampler(0)]]) {
+                        return sheet.sample(between, handed.position.xy);
+                    }
+
+                    """
+            )
+        }
     }
 }

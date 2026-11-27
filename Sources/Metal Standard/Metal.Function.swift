@@ -21,6 +21,8 @@ extension Metal.Function {
     /// What a function is declared as, by its spelling.
     public enum Role: String, Sendable, Hashable, CaseIterable {
         case kernel = "kernel"
+        case vertex = "vertex"
+        case fragment = "fragment"
         case inner = "static"
         case inlined = "static __attribute__((always_inline))"
         case inline = "static inline"
@@ -43,6 +45,11 @@ extension Metal.Function {
     public enum Attribute: Sendable, Hashable {
         case buffer(Int)
         case texture(Int)
+        case sampler(Int)
+        case vertexID
+        case instanceID
+        /// What the stage before handed on.
+        case stageIn
         case threadPositionInGrid
         case threadIndexInSimdgroup
         case threadsPerSimdgroup
@@ -55,6 +62,10 @@ extension Metal.Function {
                 switch parameter.attribute {
                 case .buffer(let index): " [[buffer(\(index))]]"
                 case .texture(let index): " [[texture(\(index))]]"
+                case .sampler(let index): " [[sampler(\(index))]]"
+                case .vertexID: " [[vertex_id]]"
+                case .instanceID: " [[instance_id]]"
+                case .stageIn: " [[stage_in]]"
                 case .threadPositionInGrid: " [[thread_position_in_grid]]"
                 case .threadIndexInSimdgroup: " [[thread_index_in_simdgroup]]"
                 case .threadsPerSimdgroup: " [[threads_per_simdgroup]]"
